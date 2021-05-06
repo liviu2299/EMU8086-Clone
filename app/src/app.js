@@ -1,0 +1,1 @@
+var app = angular.module('emu8086js', []);
