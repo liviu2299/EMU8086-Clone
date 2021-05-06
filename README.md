@@ -9,6 +9,8 @@ Program ce isi propune simularea arhitecturii x86 printr-un assembler care imple
 
 ## **Componente**
 
+asdas
+
 ### Simulator CPU
 - Instructiuni de baza
 - Registrii
