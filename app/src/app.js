@@ -1,1 +1,1 @@
-var app = angular.module('emu8086js', []);
+let app = angular.module('emu8086js', []);
