@@ -14,9 +14,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
         zero: false,
         carry: false,
 
-        on: function(){
+        // ALU Temporal Registers
+        t1: 0,
+        t2: 0,
 
-            let var1,var2;
+        on: function(){
 
             // Checking a register
             let checkReg = function(reg){ };
@@ -30,7 +32,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
             // Setting the instruction pointer IP
             let jump = function(addr){ };
 
-            // Arithmetic Logic Unit
+            // Arithmetic Logic Unit (ALU)
             let alu = function(instr){
                 switch(instr){
 
@@ -51,8 +53,6 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                     case opcodes.DEC_REG:
 
                     // ...
-
-                    default: return false;
 
                 }
                 return true;
