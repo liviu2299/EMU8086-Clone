@@ -1,13 +1,71 @@
 <!DOCTYPE html>
-<html lang="en" ng-app>
+<html lang="en" ng-app="emu8086js">
     <head>
 
-        <script src="app\lib\angular.js"></script>
+        <title>Test Bench</title>
+
+        <script src="app\lib\angular.min.js"></script>
+        <script src="app\src\app.js"></script>
+        <script src="app\src\controller.js"></script>
+        <script src="app\src\memory.js"></script>
+        <script src="app\src\opcodes.js"></script>
+        <script src="app\src\cpu.js"></script>
+
 
     </head>
-    <body>
+    <body ng-controller="controller">
 
         <h1> Test Workplace </h1>
+
+        <!-- Input Panel -->
+        <div>
+            <form role="form">
+                <textarea id=""
+                          class=""
+                          style="margin-bottom:5px;"
+                          rows="10"
+                          tab-support
+                          select-line
+                          ng-model="text">
+                </textarea>
+                <button type="button" class="btn btn-default" ng-click="reset()">Assemble</button>
+            </form>
+        </div>
         
+        </br>   
+        </br>
+
+        <!-- Output -->
+        <div class="output">
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">A</th>
+                        <th style="text-align:center">B</th>
+                        <th style="text-align:center">C</th>
+                        <th style="text-align:center">D</th>
+                        <th style="text-align:center">IP</th>
+                        <th style="text-align:center">SP</th>
+                        <th style="text-align:center">Z</th>
+                        <th style="text-align:center">C</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="text-align:center;" class="source-code">
+                        <td><div style="margin:auto;">{{cpu.ax}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.bx}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.cx}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.dx}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.ip}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.sp}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.zero}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.carry}}</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        
+
     </body>
 </html>

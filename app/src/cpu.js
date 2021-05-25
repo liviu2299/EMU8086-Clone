@@ -9,6 +9,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
         dx: 0,
         ip: 0,
         sp: 0,
+        regid: [0, 1, 2, 3, 4, 5],
 
         // Flags
         zero: false,
@@ -21,24 +22,66 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
         on: function(){
 
             // Checking a register
-            let checkReg = function(reg){ };
+            let checkReg = function(reg){
+                if(regid.includes(reg)) return reg;
+                else throw "Invalid Register";
+            };
+
             // Setting a register
-            let setReg = function(reg,value){ };
+            let setReg = function(reg,value){
+                if(regid.includes(reg)){
+                    switch(reg){
+                        case(0):    ax = value;
+                        case(1):    bx = value;
+                        case(2):    cx = value;
+                        case(3):    dx = value;
+                        case(4):    ip = value;
+                        case(5):    sp = value;
+                    }
+                }
+                else throw "Invalid Register";
+            };
+
             // Getting a register
-            let getReg = function(reg){ };
-            // Checking if a value is no bigger than 16 bits
+            let getReg = function(reg){
+                if(regid.includes(reg)){
+                    switch(reg){
+                        case(0):    return ax;
+                        case(1):    return bx;
+                        case(2):    return cx;
+                        case(3):    return dx;
+                        case(4):    return ip;
+                        case(5):    return sp;
+                    }
+                }
+                else throw "Invalid Register";
+            };
+
+            // Checking if a value is no bigger than 16 bits ?????????????????
             let check = function(value){ };
             
             // Setting the instruction pointer IP
-            let jump = function(addr){ };
+            let jump = function(addr){ 
+                if(addr > 0 && addr < memory.data.length){
+                    this.ip = addr;
+                }
+                else throw "Address out of memory";
+            };
 
             // Arithmetic Logic Unit (ALU)
             let alu = function(instr){
+                let regTo, regFrom, memFrom, memTo, number;
+
                 switch(instr){
 
                     case opcodes.NONE:
                         return false;
                     case opcodes.MOV_REG_REG:
+                        regTo = checkReg(memory.load(++self.ip));
+                        regFrom = checkReg(memory.load(++self.ip));
+                        setReg(regTo,getReg(regFrom));
+                        self.ip++;
+                        break;
                     case opcodes.MOV_ADDRESS_REG:
                     case opcodes.MOV_REG_ADDRESS:
                     case opcodes.MOV_REG_NUMBER:

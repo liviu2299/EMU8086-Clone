@@ -109,8 +109,8 @@ app.service('parser', ['opcodes', function(opcodes){
             }
 
             // Main
-
-            for(let i=0; i = lines.length; i++){
+            // Iterative checking of each line
+            for(let i = 0; i < lines.length; i++){
 
                 let match = regex.exec(lines[i]);
 
@@ -118,7 +118,7 @@ app.service('parser', ['opcodes', function(opcodes){
                 if(match[label_group] !== undefined || match[instr_group] !== undefined) {
 
                     // LABEL
-                    if(match[label_group] !== undefined) addLabel(match[1]);
+                    if(match[label_group] !== undefined) addLabel(match[label_group]);
                     // INSTR
                     if(match[instr_group] !== undefined){
 
@@ -137,7 +137,13 @@ app.service('parser', ['opcodes', function(opcodes){
                         }
 
                     }
-
+                }
+                else{
+                    var line = lines[i].trim();
+                    if (line !== "" && line.slice(0, 1) !== ";") {
+                        throw "Syntax error";
+                    }
+                }
 
             }
             
