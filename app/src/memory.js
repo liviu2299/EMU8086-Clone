@@ -3,7 +3,7 @@ app.service('memory', [function() {
     let memory = {
     
         data: Array(256).fill(0),
-        index: 0,
+        index: -1,
         
         /**
          * Returns the data in the array corresponding the address
@@ -14,7 +14,7 @@ app.service('memory', [function() {
             if(addr < 0 || addr > this.data.length) throw "Memory access violation";
             else this.index = addr;
 
-            return data[addr];
+            return this.data[addr];
         },
 
         /**

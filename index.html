@@ -10,6 +10,7 @@
         <script src="app\src\memory.js"></script>
         <script src="app\src\opcodes.js"></script>
         <script src="app\src\cpu.js"></script>
+        <script src="app\src\parser.js"></script>
 
 
     </head>
@@ -28,7 +29,7 @@
                           select-line
                           ng-model="text">
                 </textarea>
-                <button type="button" class="btn btn-default" ng-click="reset()">Assemble</button>
+                <button type="button" class="btn btn-default" ng-click="assemble()">Assemble</button>
             </form>
         </div>
         
@@ -48,6 +49,7 @@
                         <th style="text-align:center">SP</th>
                         <th style="text-align:center">Z</th>
                         <th style="text-align:center">C</th>
+                        <th style="text-align:center">Assembler</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,6 +62,7 @@
                         <td><div style="margin:auto;">{{cpu.sp}}</div></td>
                         <td><div style="margin:auto;">{{cpu.zero}}</div></td>
                         <td><div style="margin:auto;">{{cpu.carry}}</div></td>
+                        <td><div style="margin:auto;">{{codes}}</div></td>
                     </tr>
                 </tbody>
             </table>

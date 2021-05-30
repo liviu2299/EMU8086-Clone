@@ -1,6 +1,6 @@
 app.service('parser', ['opcodes', function(opcodes){
 
-    let parser = {
+    return {
 
         on: function(input){
 
@@ -26,10 +26,17 @@ app.service('parser', ['opcodes', function(opcodes){
             // Labels
             let labels = [];
 
+            // Temporals
+            let t1,t2,opCode;
+
             // Array of lines
             let lines = input.split('\n');
 
-            // Number parser: string -> int
+            /**
+             * Parsing a string value in a number.
+             * @param {string} input 
+             * @returns {number} input
+             */
             let parseNumber = function(input){
                 if (input.slice(0, 2) === "0x") {
                     return parseInt(input.slice(2), 16);
@@ -46,41 +53,58 @@ app.service('parser', ['opcodes', function(opcodes){
                 }
             };
 
-            // Register parser: string -> char
+            /**
+             * Parsing a register as char to number (A - D) --> (0 - 3)
+             * @param {char} input 
+             * @returns {number} input
+             */
             let parseRegister = function(input) {
                 input = input.toUpperCase();
 
                 if (input === 'A') {
-                    return 'a';
+                    return 0;
                 } else if (input === 'B') {
-                    return 'b';
+                    return 1;
                 } else if (input === 'C') {
-                    return 'c';
+                    return 2;
                 } else if (input === 'D') {
-                    return 'd';
+                    return 3;
                 } else {
                     return undefined;
                 }
             };
 
-            // Label parser: string -> string
+            /**
+             * Returns a label if the format corresponds.
+             * @param {string} input 
+             * @returns {string} input
+             */
             let parseLabel = function(input) {
                 return regexLabel.exec(input) ? input : undefined;
             };
 
-            // Add label
+            /**
+             * Adds a label.
+             * @param {string} input 
+             */
             let addLabel = function(input) {
                 labels[input] = code.length;
             };
 
-            // Defining the addressing type
+            /**
+             * Returns a structure that defines the addressing type: {type: REG/NUMBER, value: INPUT}
+             * @param {number} input 
+             * @param {string} typeReg 
+             * @param {string} typeNumber 
+             * @returns {{string,number}} 
+             */
             let parseRegOrNumber = function(input, typeReg, typeNumber) {
 
                 let register = parseRegister(input);
                 let label = parseLabel(input);
 
                 if(register !== undefined) return {type: typeReg, value: register};
-                else if(label !== undefined) return {type: typeNumber, value: lable};
+                else if(label !== undefined) return {type: typeNumber, value: label};
 
                 let value = parseNumber(input);
                 if (isNaN(value)) {
@@ -91,7 +115,11 @@ app.service('parser', ['opcodes', function(opcodes){
                
             };
 
-            // input -> {type: register/regaddress/address/number, value: x}
+            /**
+             * Returns {type: REGISTER/REGADDRESS/ADDRESS/NUMBER, value: INPUT}
+             * @param {string} input 
+             * @returns {{string,number}}
+             */
             let getValue = function(input) {
                 switch (input.slice(0, 1)) {
                     case '[': // [int] or [REG]
@@ -108,7 +136,7 @@ app.service('parser', ['opcodes', function(opcodes){
                 }
             }
 
-            // Main
+            // Main()
             // Iterative checking of each line
             for(let i = 0; i < lines.length; i++){
 
@@ -123,11 +151,20 @@ app.service('parser', ['opcodes', function(opcodes){
                     if(match[instr_group] !== undefined){
 
                         let instr = match[instr_group].toUpperCase();
-                        let p1,p2, opCode;
 
                         switch(instr){
 
                             case 'MOV':
+                                t1 = getValue(match[op1_group]);
+                                t2 = getValue(match[op2_group]);
+
+                                if (t1.type === "register" && t2.type === "register")
+                                    opCode = 1;
+                                else
+                                    throw "MOV does not support this operands";
+
+                                code.push(opCode, t1.value, t2.value);
+                                break;
                             case 'ADD':
 
                             // ....
@@ -138,6 +175,7 @@ app.service('parser', ['opcodes', function(opcodes){
 
                     }
                 }
+                // Check for Syntax Error
                 else{
                     var line = lines[i].trim();
                     if (line !== "" && line.slice(0, 1) !== ";") {
@@ -151,5 +189,5 @@ app.service('parser', ['opcodes', function(opcodes){
         }
 
 
-    }
+    };
 }]);

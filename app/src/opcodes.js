@@ -17,5 +17,5 @@ app.service('opcodes', [function() {
         DEC_REG: 14
 
         // ...
-    }
+    };
 }])

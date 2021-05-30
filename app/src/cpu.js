@@ -21,13 +21,21 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
 
         on: function(){
 
-            // Checking a register
+            /**
+             * Checks and returns 0-5 for ax-sp.
+             * @param {number} reg 
+             * @returns {number} reg
+             */
             let checkReg = function(reg){
                 if(regid.includes(reg)) return reg;
                 else throw "Invalid Register";
             };
 
-            // Setting a register
+            /**
+             * Sets a register (0-5) with a given value.
+             * @param {number} reg 
+             * @param {number} value 
+             */
             let setReg = function(reg,value){
                 if(regid.includes(reg)){
                     switch(reg){
@@ -42,7 +50,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                 else throw "Invalid Register";
             };
 
-            // Getting a register
+            /**
+             * Returns the value of a given register (0-5).
+             * @param {number} reg 
+             * @returns {number} value
+             */
             let getReg = function(reg){
                 if(regid.includes(reg)){
                     switch(reg){
@@ -60,7 +72,10 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
             // Checking if a value is no bigger than 16 bits ?????????????????
             let check = function(value){ };
             
-            // Setting the instruction pointer IP
+            /**
+             * Jumps to a given address and updates the ip (Intruction Pointer) register
+             * @param {number} addr 
+             */
             let jump = function(addr){ 
                 if(addr > 0 && addr < memory.data.length){
                     this.ip = addr;
@@ -70,16 +85,15 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
 
             // Arithmetic Logic Unit (ALU)
             let alu = function(instr){
-                let regTo, regFrom, memFrom, memTo, number;
 
                 switch(instr){
 
                     case opcodes.NONE:
                         return false;
                     case opcodes.MOV_REG_REG:
-                        regTo = checkReg(memory.load(++self.ip));
-                        regFrom = checkReg(memory.load(++self.ip));
-                        setReg(regTo,getReg(regFrom));
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = checkReg(memory.read(++self.ip));
+                        setReg(t1,getReg(t2));
                         self.ip++;
                         break;
                     case opcodes.MOV_ADDRESS_REG:
@@ -102,7 +116,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
             };
 
             // Main
-            let instr = memory.load(this.ip);
+            let instr = memory.read(this.ip);
             alu(instr);
 
         },
@@ -112,15 +126,16 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
             this.bx = 0;
             this.cx = 0;
             this.dx = 0;
-            this.ip = 0;
+            this.ip = 1;
             this.sp = 0;
             this.zero = false;
             this.carry = false;
             memory.reset();
         }
 
-    }
+    };
 
+    
     return cpu;
 
 }])
