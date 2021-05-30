@@ -159,7 +159,7 @@ app.service('parser', ['opcodes', function(opcodes){
                                 t2 = getValue(match[op2_group]);
 
                                 if (t1.type === "register" && t2.type === "register")
-                                    opCode = 1;
+                                    opCode = opcodes.MOV_REG_REG;
                                 else
                                     throw "MOV does not support this operands";
 

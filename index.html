@@ -30,6 +30,7 @@
                           ng-model="text">
                 </textarea>
                 <button type="button" class="btn btn-default" ng-click="assemble()">Assemble</button>
+                <button type="button" class="btn btn-default" ng-click="run()">Run</button>
             </form>
         </div>
         
@@ -50,6 +51,8 @@
                         <th style="text-align:center">Z</th>
                         <th style="text-align:center">C</th>
                         <th style="text-align:center">Assembler</th>
+                        <th style="text-align:center">Running</th>
+                        <th style="text-align:center">ValidOpCode</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,12 +66,20 @@
                         <td><div style="margin:auto;">{{cpu.zero}}</div></td>
                         <td><div style="margin:auto;">{{cpu.carry}}</div></td>
                         <td><div style="margin:auto;">{{codes}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.running}}</div></td>
+                        <td><div style="margin:auto;">{{cpu.valid}}</div></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        
+        </br>
+        </br>
+
+        <h3>RAM</h3>
+        <div>
+            {{memory.data}}
+        </div>
 
     </body>
 </html>

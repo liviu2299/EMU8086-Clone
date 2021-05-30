@@ -19,7 +19,15 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
         t1: 0,
         t2: 0,
 
+        // ON/OFF
+        running: true,
+        valid: true,
+
+        codes: opcodes,
+
         on: function(){
+
+            let self = this;
 
             /**
              * Checks and returns 0-5 for ax-sp.
@@ -27,7 +35,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
              * @returns {number} reg
              */
             let checkReg = function(reg){
-                if(regid.includes(reg)) return reg;
+                if(self.regid.includes(reg)) return reg;
                 else throw "Invalid Register";
             };
 
@@ -37,14 +45,20 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
              * @param {number} value 
              */
             let setReg = function(reg,value){
-                if(regid.includes(reg)){
+                if(self.regid.includes(reg)){
                     switch(reg){
-                        case(0):    ax = value;
-                        case(1):    bx = value;
-                        case(2):    cx = value;
-                        case(3):    dx = value;
-                        case(4):    ip = value;
-                        case(5):    sp = value;
+                        case(0):    self.ax = value;
+                                    break;
+                        case(1):    self.bx = value;
+                                    break;
+                        case(2):    self.cx = value;
+                                    break;
+                        case(3):    self.dx = value;
+                                    break;
+                        case(4):    self.ip = value;
+                                    break;
+                        case(5):    self.sp = value;
+                                    break;
                     }
                 }
                 else throw "Invalid Register";
@@ -56,14 +70,14 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
              * @returns {number} value
              */
             let getReg = function(reg){
-                if(regid.includes(reg)){
+                if(self.regid.includes(reg)){
                     switch(reg){
-                        case(0):    return ax;
-                        case(1):    return bx;
-                        case(2):    return cx;
-                        case(3):    return dx;
-                        case(4):    return ip;
-                        case(5):    return sp;
+                        case(0):    return self.ax;
+                        case(1):    return self.bx;
+                        case(2):    return self.cx;
+                        case(3):    return self.dx;
+                        case(4):    return self.ip;
+                        case(5):    return self.sp;
                     }
                 }
                 else throw "Invalid Register";
@@ -78,7 +92,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
              */
             let jump = function(addr){ 
                 if(addr > 0 && addr < memory.data.length){
-                    this.ip = addr;
+                    self.ip = addr;
                 }
                 else throw "Address out of memory";
             };
@@ -108,28 +122,39 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                     case opcodes.SUB_REG_NUMBER:
                     case opcodes.INC_REG:
                     case opcodes.DEC_REG:
-
-                    // ...
+                    default:
+                        self.valid = false;
+                        break;
 
                 }
                 return true;
             };
 
             // Main
-            let instr = memory.read(this.ip);
-            alu(instr);
+
+            let instr = memory.read(self.ip);
+
+            if(instr != 0){
+                alu(instr);
+                self.running = true;
+            }
+            else self.running = false;
+            
 
         },
 
         reset: function(){ 
-            this.ax = 0;
-            this.bx = 0;
-            this.cx = 0;
-            this.dx = 0;
-            this.ip = 1;
-            this.sp = 0;
-            this.zero = false;
-            this.carry = false;
+            let self = this;
+            self.ax = 0;
+            self.bx = 1;
+            self.cx = 0;
+            self.dx = 0;
+            self.ip = 0;
+            self.sp = 0;
+            self.zero = false;
+            self.carry = false;
+            self.running = true;
+            self.valid = true;
             memory.reset();
         }
 

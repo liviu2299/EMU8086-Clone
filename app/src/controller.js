@@ -4,7 +4,6 @@ app.controller('controller', ['$scope', 'memory', 'opcodes', 'cpu', 'parser', fu
 
     $scope.cpu = cpu;
     $scope.memory = memory;
-
     
 
     // RESET
@@ -13,16 +12,22 @@ app.controller('controller', ['$scope', 'memory', 'opcodes', 'cpu', 'parser', fu
         cpu.reset();
     };
 
-    // RUN
+    // ASSEMBLE
     $scope.assemble = function(){
         $scope.reset();
-        $scope.cpu.bx = 3;
         let assembler = parser.on($scope.text);
-        $scope.cpu.bx = assembler.code;
         $scope.codes = assembler.code;
+
+        for(let i=0; i<$scope.codes.length; i++) memory.data[i] = $scope.codes[i];
+        
     };
 
-
-    
+    // RUN
+    $scope.run = function(){
+        while(cpu.running && cpu.valid)
+        {
+            setTimeout(cpu.on(),500);
+        }
+    };
 
 }]);
