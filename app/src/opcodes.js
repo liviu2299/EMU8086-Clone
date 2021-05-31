@@ -15,7 +15,7 @@ app.service('opcodes', [function() {
         ADD_REG_NUMBER: 9,
         ADD_REG_REG: 10,
         ADD_REG_REGADDRESS: 11,
-        ADD_REG_ADRESS: 12,
+        ADD_REG_ADDRESS: 12,
 
         SUB_REG_REG: 13,
         SUB_REG_REGADDRESS: 14,
@@ -25,6 +25,35 @@ app.service('opcodes', [function() {
         INC_REG: 17,
         DEC_REG: 18,
 
+        CMP_REG_REG: 19,
+        CMP_REG_REGADDRESS: 20,
+        CMP_REG_ADDRESS: 21,
+        CMP_REG_NUMBER: 22,
+
+        JMP_REGADDRESS: 23,
+        JMP_ADDRESS: 24,
+
+        MUL_REG: 25,
+        MUL_REGADDRESS: 26,
+        MUL_ADDRESS: 27,
+        MUL_NUMBER: 28,
+
+        DIV_REG: 29,
+        DIV_REGADDRESS: 30,
+        DIV_ADDRESS: 31,
+        DIV_NUMBER: 32,
+
+        AND_REG_REG: 33,
+        AND_REG_REGADDRESS: 34,
+        AND_REG_ADDRESS: 35,
+        AND_REG_NUMBER: 36,
+
+        OR_REG_REG: 37,
+        OR_REG_REGADDRESS: 38,
+        OR_REG_ADDRESS: 39,
+        OR_REG_NUMBER: 40,
+
+        NOT_REG: 41
 
         // ...
     };

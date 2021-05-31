@@ -83,8 +83,26 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                 else throw "Invalid Register";
             };
 
-            // Checking if a value is no bigger than 16 bits ?????????????????
-            let check = function(value){ };
+            /**
+             * Checking if a value triggers the flags
+             * @param {number} value 
+             */
+            let check = function(value){
+                self.zero = false;;
+                self.carry = false;
+
+                if (value >= 256) {
+                    self.carry = true;
+                    value = value % 256;
+                } else if (value === 0) {
+                    self.zero = true;
+                } else if (value < 0) {
+                    self.carry = true;
+                    value = 256 - (-value) % 256;
+                }
+
+                return value;
+            };
             
             /**
              * Jumps to a given address and updates the ip (Intruction Pointer) register
@@ -110,18 +128,262 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         setReg(t1,getReg(t2));
                         self.ip++;
                         break;
-                    case opcodes.MOV_ADDRESS_REG:
                     case opcodes.MOV_REG_ADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,memory.read(t2));
+                        self.ip++;
+                        break;
+                    case opcodes.MOV_REG_REGADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,memory.read(getReg(t2)));
+                        self.ip++;
+                        break;
                     case opcodes.MOV_REG_NUMBER:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,t2);
+                        self.ip++;
+                        break;
+                    case opcodes.MOV_ADDRESS_REG:
+                        t1 = memory.read(++self.ip);
+                        t2 = checkReg(memory.read(++self.ip));
+                        memory.write(t1, getReg(t2));
+                        self.ip++;
+                        break;
                     case opcodes.MOV_ADDRESS_NUMBER:
-                    case opcodes.ADD_REG_REG:
-                    case opcodes.ADD_REG_ADDRESS:
+                        t1 = memory.read(++self.ip);
+                        t2 = memory.read(++self.ip);
+                        memory.write(t1, t2);
+                        self.ip++;
+                        break;
+                    case opcodes.MOV_REGADRESS_REG:
+                        t1 = memory.read(++self.ip);
+                        t2 = checkReg(memory.read(++self.ip));
+                        memory.write(memory.read(getReg(t2)),getReg(t2));
+                        self.ip++;
+                        break;
+                    case opcodes.MOV_REGADRESS_NUMBER:
+                        t1 = memory.read(++self.ip);
+                        t2 = memory.read(++self.ip);
+                        memory.write(memory.read(getReg(t2)),t2);
+                        self.ip++;
+                        break;
+
+                    ///////////////////////////////////////
+
                     case opcodes.ADD_REG_NUMBER:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1)+t2));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_REG_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = checkReg(memory.read(++self.ip));
+                        setReg(t1,check(getReg(t1)+getReg(t2)));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_REG_REGADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1)+memory.read(getReg(t2))));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_REG_ADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1)+memory.read(t2)));
+                        self.ip++;
+                        break;
+
+                    ///////////////////////////////////////
+
                     case opcodes.SUB_REG_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = checkReg(memory.read(++self.ip));
+                        setReg(t1,check(getReg(t1)-getReg(t2)));
+                        self.ip++;
+                        break;
+                    case opcodes.SUB_REG_REGADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1)-memory.read(getReg(t2))));
+                        self.ip++;
+                        break;
                     case opcodes.SUB_REG_ADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1)-memory.read(t2)));
+                        self.ip++;
+                        break;
                     case opcodes.SUB_REG_NUMBER:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1)-t2));
+                        self.ip++;
+                        break;
+
+                    ///////////////////////////////////////
+
                     case opcodes.INC_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        setReg(t1, check(getReg(t1)+1));
+                        self.ip++;
+                        break;
                     case opcodes.DEC_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        setReg(t1, check(getReg(t1)-1));
+                        self.ip++;
+                        break;
+
+                    ///////////////////////////////////////
+
+                    case opcodes.CMP_REG_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = checkReg(memory.read(++self.ip));
+                        check(getReg(t1) - getReg(t2));
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_REG_REGADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        check(getReg(t1) - memory.read(getReg(t2)));
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_REG_ADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        check(getReg(t1) - memory.read(t2));
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_REG_NUMBER:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        check(getReg(t1) - t2);
+                        self.ip++;
+                        break;
+
+                    ///////////////////////////////////////
+
+                    case opcodes.JMP_REGADDRESS:
+                        t2 = memory.read(++self.ip);
+                        jump(getReg(t2));
+                        break;
+                    case opcodes.JMP_ADDRESS:
+                        t2 = memory.read(++self.ip);
+                        jump(t2);
+                        break;
+
+                    ///////////////////////////////////////
+
+                    case opcodes.MUL_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        setReg(0,check(getReg(0)*getReg(t1)));
+                        self.ip++;
+                        break;
+                    case opcodes.MUL_REGADDRESS:
+                        t1 = memory.read(++self.ip);
+                        setReg(0,check(getReg(0)*memory.read(getReg(t2))));
+                        self.ip++;
+                        break;
+                    case opcodes.MUL_ADDRESS:
+                        t1 = memory.read(++self.ip);
+                        setReg(0,check(getReg(0)*memory.read(t1)));
+                        self.ip++;
+                        break;
+                    case opcodes.MUL_NUMBER:
+                        t1 = memory.read(++self.ip);
+                        setReg(0,check(getReg(0)*t1));
+                        self.ip++;
+                        break;
+
+                    ///////////////////////////////////////
+
+                    case opcodes.DIV_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        setReg(0,check(getReg(0)/getReg(t1)));
+                        self.ip++;
+                        break;
+                    case opcodes.DIV_REGADDRESS:
+                        t1 = memory.read(++self.ip);
+                        setReg(0,check(getReg(0)/memory.read(getReg(t2))));
+                        self.ip++;
+                        break;
+                    case opcodes.DIV_ADDRESS:
+                        t1 = memory.read(++self.ip);
+                        setReg(0,check(getReg(0)/memory.read(t1)));
+                        self.ip++;
+                        break;
+                    case opcodes.DIV_NUMBER:
+                        t1 = memory.read(++self.ip);
+                        setReg(0,check(getReg(0)/t1));
+                        self.ip++;
+                        break;
+
+                    ///////////////////////////////////////
+
+                    case opcodes.AND_REG_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = checkReg(memory.read(++self.ip));
+                        setReg(t1,check(getReg(t1) & getReg(t2)));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_REG_REGADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1) & memory.read(getReg(t2))));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_REG_ADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1) & memory.read(t2)));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_REG_NUMBER:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1) & t2));
+                        self.ip++;
+                        break;
+
+                    ///////////////////////////////////////
+
+                    case opcodes.OR_REG_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = checkReg(memory.read(++self.ip));
+                        setReg(t1,check(getReg(t1) | getReg(t2)));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_REG_REGADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1) | memory.read(getReg(t2))));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_REG_ADDRESS:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1) | memory.read(t2)));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_REG_NUMBER:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1) | t2));
+                        self.ip++;
+                        break;
+
+                    //////////////////////////////////////
+
+                    // ??????
+                    case opcodes.NOT_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        setReg(t1, ~getReg(t1));
+                        break;
+
                     default:
                         self.valid = false;
                         break;
