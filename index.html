@@ -81,5 +81,28 @@
             {{memory.data}}
         </div>
 
+        <h3>Stack</h3>
+        <div>
+            {{memory.stack}}
+        </div>
+
+        <h3>Labels</h3>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Label</th>
+                        <th>Address</th>
+                    </tr>     
+                </thead>
+                <tbody>
+                    <tr ng-repeat="label in labels">
+                        <td>{{label.name}}</td>
+                        <td>{{label.address}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </body>
 </html>

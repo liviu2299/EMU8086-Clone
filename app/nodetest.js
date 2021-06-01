@@ -385,12 +385,18 @@ let parser = {
 };
 
 // TEST
-
+/*
 let text = "MOV A, B";
 
 let memorie = memory;
 let assembler = parser;
 
 let result = assembler.on(text);
-console.log(result);
+console.log(result);*/
 
+////////////
+
+let label = [];
+label["start"] = 0;
+
+console.log(label["start"]);

@@ -3,6 +3,8 @@ app.service('memory', [function() {
     let memory = {
     
         data: Array(256).fill(0),
+        stack: [],
+        stack_size: 20,
         index: -1,
         
         /**
@@ -12,9 +14,7 @@ app.service('memory', [function() {
          */
         read: function(addr){
             if(addr < 0 || addr > this.data.length) throw "Memory access violation";
-            else this.index = addr;
-
-            return this.data[addr];
+            else return this.data[addr];    
         },
 
         /**
@@ -24,10 +24,24 @@ app.service('memory', [function() {
          */
         write: function(addr, value){
             if(addr < 0 || addr > this.data.length) throw "Memory access violation";
-            else{
-                this.index = addr;
-                this.data[addr] = value;
+            else this.data[addr] = value;
+        },
+
+        push: function(value){
+            if(this.index < this.stack_size-1){
+                this.stack.push(value);
+                this.index++;
             }
+            else throw "Stack Overflow";
+        },
+
+        pop: function(){
+            if(this.index >= 0){
+                let x = this.stack.pop();
+                this.index--;
+                return x;
+            }
+            else throw "Stack UnderFlow";
         },
 
         /**
@@ -35,7 +49,8 @@ app.service('memory', [function() {
          */
         reset: function(){
             this.data.fill(0);
-            this.index = 0;
+            this.stack = [];
+            this.index = -1;
         }
 
     };

@@ -384,6 +384,38 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         setReg(t1, ~getReg(t1));
                         break;
 
+                    //////////////////////////////////////
+
+                    case opcodes.PUSH_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        memory.push(getReg(t1));
+                        self.ip++;
+                        break;
+
+                    case opcodes.PUSH_REGADDRESS:
+                        t1 = memory.read(++self.ip);
+                        memory.push(memory.read(getReg(t2)));
+                        self.ip++;
+                        break;
+    
+                    case opcodes.PUSH_ADDRESS:
+                        t1 = memory.read(++self.ip);
+                        memory.push(memory.read(t1));
+                        self.ip++;
+                        break;
+                    
+                    case opcodes.PUSH_NUMBER:
+                        t1 = memory.read(++self.ip);
+                        memory.push(t1);
+                        self.ip++;
+                        break;
+                    
+                    case opcodes.POP_REG:
+                        t1 = checkReg(memory.read(++self.ip));
+                        setReg(t1,memory.pop());
+                        self.ip++;
+                        break;
+
                     default:
                         self.valid = false;
                         break;
@@ -408,7 +440,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
         reset: function(){ 
             let self = this;
             self.ax = 0;
-            self.bx = 1;
+            self.bx = 0;
             self.cx = 0;
             self.dx = 0;
             self.ip = 0;

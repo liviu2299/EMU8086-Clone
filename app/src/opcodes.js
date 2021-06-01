@@ -53,7 +53,16 @@ app.service('opcodes', [function() {
         OR_REG_ADDRESS: 39,
         OR_REG_NUMBER: 40,
 
-        NOT_REG: 41
+        NOT_REG: 41,
+
+        HLT: 42,
+
+        PUSH_REG: 43,
+        PUSH_REGADDRESS: 44,
+        PUSH_ADDDRESS: 45,
+        PUSH_NUMBER: 46,
+
+        POP_REG: 47
 
         // ...
     };

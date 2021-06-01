@@ -6,6 +6,7 @@ app.controller('controller', ['$scope', 'memory', 'opcodes', 'cpu', 'parser', fu
     $scope.memory = memory;
     
 
+
     // RESET
     $scope.reset = function(){
         memory.reset();
@@ -18,6 +19,9 @@ app.controller('controller', ['$scope', 'memory', 'opcodes', 'cpu', 'parser', fu
         let assembler = parser.on($scope.text);
         $scope.codes = assembler.code;
 
+        $scope.labels = assembler.labels;
+
+        
         for(let i=0; i<$scope.codes.length; i++) memory.data[i] = $scope.codes[i];
         
     };

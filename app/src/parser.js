@@ -88,7 +88,8 @@ app.service('parser', ['opcodes', function(opcodes){
              * @param {string} input 
              */
             let addLabel = function(input) {
-                labels[input] = code.length;
+                //labels[input] = code.length;
+                labels.push({name: input, address: code.length});
             };
 
             /**
@@ -344,6 +345,42 @@ app.service('parser', ['opcodes', function(opcodes){
                                 
                                 code.push(opCode, t1.value);
                                 break;
+                            case 'HLT':
+                                if(match[op1_group]) throw "This instruction supports no arguments";
+                                if(match[op2_group]) throw "This instruction supports no arguments";
+                                opCode = opcodes.NONE;
+                                code.push(opCode);
+                                break;
+                            case 'PUSH':
+                                t1 = getValue(match[op1_group]);
+                                if(match[op2_group]) throw "This instruction supports only one argument";
+
+                                if (t1.type === "register")
+                                    opCode = opcodes.PUSH_REG;
+                                else if (t1.type === "regaddress")
+                                    opCode = opcodes.PUSH_REGADDRESS;
+                                else if (t1.type === "address")
+                                    opCode = opcodes.PUSH_ADDRESS;
+                                else if (t1.type === "number")
+                                    opCode = opcodes.PUSH_NUMBER;
+                                else
+                                    throw "PUSH does not support this operand";
+
+                                code.push(opCode, t1.value);
+                                break;
+                            case 'POP':
+                                t1 = getValue(match[op1_group]);
+                                if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                if (t1.type === "register")
+                                    opCode = opcodes.POP_REG;
+                                else
+                                throw "POP does not support this operand";
+                                
+                                code.push(opCode, t1.value);
+                                break;
+                            
+
                             default: throw("Invalid instruction " + match[instr_group]);
 
                         }
@@ -358,6 +395,19 @@ app.service('parser', ['opcodes', function(opcodes){
                     }
                 }
 
+            }
+            // Replace labels
+            for(let i=0; i<code.length; i++){
+                if(!angular.isNumber(code[i])){
+                    let error = true;
+                    for(let j=0; j<labels.length; j++){
+                        if(code[i]==labels[j].name){
+                            code[i] = labels[j].address;
+                            error = false;
+                        }
+                    }
+                    if(error) throw "Undefined label";
+                }
             }
             
             return {code: code, mapping: mapping, labels: labels};
