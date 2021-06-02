@@ -8,10 +8,10 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
         cx: 0,
         dx: 0,
         ip: 0,
-        sp: 0,
-        regid: [0, 1, 2, 3, 4, 5],
+        regid: [0, 1, 2, 3, 4],
 
         // Flags
+        sign: false,
         zero: false,
         carry: false,
 
@@ -30,7 +30,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
             let self = this;
 
             /**
-             * Checks and returns 0-5 for ax-sp.
+             * Checks and returns 0-4 for ax-ip.
              * @param {number} reg 
              * @returns {number} reg
              */
@@ -57,8 +57,6 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                                     break;
                         case(4):    self.ip = value;
                                     break;
-                        case(5):    self.sp = value;
-                                    break;
                     }
                 }
                 else throw "Invalid Register";
@@ -77,7 +75,6 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         case(2):    return self.cx;
                         case(3):    return self.dx;
                         case(4):    return self.ip;
-                        case(5):    return self.sp;
                     }
                 }
                 else throw "Invalid Register";
@@ -90,6 +87,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
             let check = function(value){
                 self.zero = false;;
                 self.carry = false;
+                self.sign = false;
 
                 if (value >= 256) {
                     self.carry = true;
@@ -97,6 +95,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                 } else if (value === 0) {
                     self.zero = true;
                 } else if (value < 0) {
+                    self.sign = true;
                     self.carry = true;
                     value = 256 - (-value) % 256;
                 }
@@ -275,6 +274,38 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         t2 = memory.read(++self.ip);
                         jump(t2);
                         break;
+                    case opcodes.JG_ADDRESS:
+                        if(!self.sign && !self.zero)
+                        {
+                            t2 = memory.read(++self.ip);
+                            jump(t2);
+                        }
+                        else self.ip += 2;
+                        break;
+                    case opcodes.JGE_ADDRESS:
+                        if(!self.sign)
+                        {
+                            t2 = memory.read(++self.ip);
+                            jump(t2);
+                        }
+                        else self.ip += 2;
+                        break;
+                    case opcodes.JL_ADDRESS:
+                        if(self.sign && !self.zero)
+                        {
+                            t2 = memory.read(++self.ip);
+                            jump(t2);
+                        }
+                        else self.ip += 2;
+                        break;
+                    case opcodes.JLE_ADDRESS:
+                        if(self.sign)
+                        {
+                            t2 = memory.read(++self.ip);
+                            jump(t2);
+                        }
+                        else self.ip += 2;
+                        break;      
 
                     ///////////////////////////////////////
 
@@ -444,7 +475,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
             self.cx = 0;
             self.dx = 0;
             self.ip = 0;
-            self.sp = 0;
+            self.sign = false;
             self.zero = false;
             self.carry = false;
             self.running = true;

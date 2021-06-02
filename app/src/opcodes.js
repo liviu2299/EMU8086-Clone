@@ -62,8 +62,12 @@ app.service('opcodes', [function() {
         PUSH_ADDDRESS: 45,
         PUSH_NUMBER: 46,
 
-        POP_REG: 47
+        POP_REG: 47,
 
+        JG_ADDRESS: 48,
+        JGE_ADDRESS: 49,
+        JL_ADDRESS: 50,
+        JLE_ADDRESS: 51
         // ...
     };
     return opcodes;

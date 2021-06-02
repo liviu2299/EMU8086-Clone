@@ -4,7 +4,7 @@ app.service('memory', [function() {
     
         data: Array(256).fill(0),
         stack: [],
-        stack_size: 20,
+        stack_size: 32,
         index: -1,
         
         /**

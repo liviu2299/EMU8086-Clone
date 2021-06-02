@@ -21,8 +21,6 @@ app.service('parser', ['opcodes', function(opcodes){
             
             // Code
             let code = [];
-            // Mapping
-            let mapping = [];
             // Labels
             let labels = [];
 
@@ -266,6 +264,50 @@ app.service('parser', ['opcodes', function(opcodes){
 
                                 code.push(opCode, t1.value);
                                 break;
+                            case 'JG':
+                                t1 = getValue(match[op1_group]);
+                                if(match[op2_group]) throw "This instruction supports only one argument";
+
+                                if (t1.type === "number")
+                                    opCode = opcodes.JG_ADDRESS;
+                                else
+                                    throw "JG does not support this operands";
+    
+                                code.push(opCode, t1.value);
+                                break;
+                            case 'JGE':
+                                t1 = getValue(match[op1_group]);
+                                if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                if (t1.type === "number")
+                                    opCode = opcodes.JGE_ADDRESS;
+                                else
+                                    throw "JGE does not support this operands";
+        
+                                code.push(opCode, t1.value);
+                                break;
+                            case 'JL':
+                                t1 = getValue(match[op1_group]);
+                                if(match[op2_group]) throw "This instruction supports only one argument";
+        
+                                if (t1.type === "number")
+                                    opCode = opcodes.JL_ADDRESS;
+                                else
+                                    throw "JL does not support this operands";
+            
+                                code.push(opCode, t1.value);
+                                break;
+                            case 'JLE':
+                                t1 = getValue(match[op1_group]);
+                                if(match[op2_group]) throw "This instruction supports only one argument";
+            
+                                if (t1.type === "number")
+                                    opCode = opcodes.JLE_ADDRESS;
+                                else
+                                    throw "JLE does not support this operands";
+                
+                                code.push(opCode, t1.value);
+                                break;
                             case 'MUL':
                                 t1 = getValue(match[op1_group]);
                                 if(match[op2_group]) throw "This instruction supports only one argument";
@@ -410,7 +452,7 @@ app.service('parser', ['opcodes', function(opcodes){
                 }
             }
             
-            return {code: code, mapping: mapping, labels: labels};
+            return {code: code, labels: labels};
         }
 
 
