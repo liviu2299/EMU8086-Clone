@@ -137,306 +137,377 @@ app.service('parser', ['opcodes', function(opcodes){
 
             // Main()
             // Iterative checking of each line
-            for(let i = 0; i < lines.length; i++){
+            try{
+                for(let i = 0; i < lines.length; i++){
 
-                let match = regex.exec(lines[i]);
-
-                // If LABEL or INSTR exist
-                if(match[label_group] !== undefined || match[instr_group] !== undefined) {
-
-                    // LABEL
-                    if(match[label_group] !== undefined) addLabel(match[label_group]);
-                    // INSTR
-                    if(match[instr_group] !== undefined){
-
-                        let instr = match[instr_group].toUpperCase();
-
-                        switch(instr){
-
-                            case 'MOV':
-                                t1 = getValue(match[op1_group]);
-                                t2 = getValue(match[op2_group]);
-
-                                if (t1.type === "register" && t2.type === "register")
-                                    opCode = opcodes.MOV_REG_REG;
-                                else if (t1.type === "register" && t2.type === "address")
-                                    opCode = opcodes.MOV_REG_ADDRESS;
-                                else if (t1.type === "register" && t2.type === "regaddress")
-                                    opCode = opcodes.MOV_REG_REGADDRESS;
-                                else if (t1.type === "address" && t2.type === "register")
-                                    opCode = opcodes.MOV_ADDRESS_REG;
-                                else if (t1.type === "regaddress" && t2.type === "register")
-                                    opCode = opcodes.MOV_REGADRESS_REG;
-                                else if (t1.type === "register" && t2.type === "number")
-                                    opCode = opcodes.MOV_REG_NUMBER;
-                                else if (t1.type === "address" && t2.type === "number")
-                                    opCode = opcodes.MOV_ADDRESS_NUMBER;
-                                else if (t1.type === "regaddress" && t2.type === "number")
-                                    opCode = opcodes.MOV_REGADRESS_NUMBER;
-                                else
-                                    throw "MOV does not support this operands";
-
-                                code.push(opCode, t1.value, t2.value);
-                                break;
-                            case 'ADD':
-                                t1 = getValue(match[op1_group]);
-                                t2 = getValue(match[op2_group]);
-
-                                if (t1.type === "register" && t2.type === "register")
-                                    opCode = opcodes.ADD_REG_REG;
-                                else if (t1.type === "register" && t2.type === "regaddress")
-                                    opCode = opcodes.ADD_REG_REGADDRESS;
-                                else if (t1.type === "register" && t2.type === "address")
-                                    opCode = opcodes.ADD_REG_ADDRESS;
-                                else if (t1.type === "register" && t2.type === "number")
-                                    opCode = opcodes.ADD_REG_NUMBER;
-                                else
-                                    throw "ADD does not support this operands";
-
-                                code.push(opCode, t1.value, t2.value);
-                                break;
-                            case 'SUB':
-                                t1 = getValue(match[op1_group]);
-                                t2 = getValue(match[op2_group]);
-
-                                if (t1.type === "register" && t2.type === "register")
-                                    opCode = opcodes.SUB_REG_REG;
-                                else if (t1.type === "register" && t2.type === "regaddress")
-                                    opCode = opcodes.SUB_REG_REGADDRESS;
-                                else if (t1.type === "register" && t2.type === "address")
-                                    opCode = opcodes.SUB_REG_ADDRESS;
-                                else if (t1.type === "register" && t2.type === "number")
-                                    opCode = opcodes.SUB_REG_NUMBER;
-                                else
-                                    throw "SUB does not support this operands";
-
-                                code.push(opCode, t1.value, t2.value);
-                                break;
-                            case 'INC':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
-
-                                if (t1.type === "register")
-                                    opCode = opcodes.INC_REG;
-                                else
-                                    throw "INC does not support this operand";
-
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'DEC':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
-
-                                if (t1.type === "register")
-                                    opCode = opcodes.DEC_REG;
-                                else
-                                    throw "DEC does not support this operand";
-
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'CMP':
-                                t1 = getValue(match[op1_group]);
-                                t2 = getValue(match[op2_group]);
-
-                                if (t1.type === "register" && t2.type === "register")
-                                    opCode = opcodes.CMP_REG_REG;
-                                else if (t1.type === "register" && t2.type === "regaddress")
-                                    opCode = opcodes.CMP_REG_REGADDRESS;
-                                else if (t1.type === "register" && t2.type === "address")
-                                    opCode = opcodes.CMP_REG_ADDRESS;
-                                else if (t1.type === "register" && t2.type === "number")
-                                    opCode = opcodes.CMP_REG_NUMBER;
-                                else
-                                    throw "CMP does not support this operands";
-
-                                code.push(opCode, t1.value, t2.value);
-                                break;
-                            case 'JMP':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
-
-                                if (t1.type === "register")
-                                    opCode = opcodes.JMP_REGADDRESS;
-                                else if (t1.type === "number")
-                                    opCode = opcodes.JMP_ADDRESS;
-                                else
-                                    throw "JMP does not support this operands";
-
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'JG':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
-
-                                if (t1.type === "number")
-                                    opCode = opcodes.JG_ADDRESS;
-                                else
-                                    throw "JG does not support this operands";
+                    let match = regex.exec(lines[i]);
     
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'JGE':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
+                    // If LABEL or INSTR exist
+                    if(match[label_group] !== undefined || match[instr_group] !== undefined) {
     
-                                if (t1.type === "number")
-                                    opCode = opcodes.JGE_ADDRESS;
-                                else
-                                    throw "JGE does not support this operands";
+                        // LABEL
+                        if(match[label_group] !== undefined) addLabel(match[label_group]);
+                        // INSTR
+                        if(match[instr_group] !== undefined){
+    
+                            let instr = match[instr_group].toUpperCase();
+    
+                            switch(instr){
+    
+                                case 'MOV':
+                                    t1 = getValue(match[op1_group]);
+                                    t2 = getValue(match[op2_group]);
+    
+                                    if (t1.type === "register" && t2.type === "register")
+                                        opCode = opcodes.MOV_REG_REG;
+                                    else if (t1.type === "register" && t2.type === "address")
+                                        opCode = opcodes.MOV_REG_ADDRESS;
+                                    else if (t1.type === "register" && t2.type === "regaddress")
+                                        opCode = opcodes.MOV_REG_REGADDRESS;
+                                    else if (t1.type === "address" && t2.type === "register")
+                                        opCode = opcodes.MOV_ADDRESS_REG;
+                                    else if (t1.type === "regaddress" && t2.type === "register")
+                                        opCode = opcodes.MOV_REGADRESS_REG;
+                                    else if (t1.type === "register" && t2.type === "number")
+                                        opCode = opcodes.MOV_REG_NUMBER;
+                                    else if (t1.type === "address" && t2.type === "number")
+                                        opCode = opcodes.MOV_ADDRESS_NUMBER;
+                                    else if (t1.type === "regaddress" && t2.type === "number")
+                                        opCode = opcodes.MOV_REGADRESS_NUMBER;
+                                    else
+                                        throw "MOV does not support this operands";
+    
+                                    code.push(opCode, t1.value, t2.value);
+                                    break;
+                                case 'ADD':
+                                    t1 = getValue(match[op1_group]);
+                                    t2 = getValue(match[op2_group]);
+    
+                                    if (t1.type === "register" && t2.type === "register")
+                                        opCode = opcodes.ADD_REG_REG;
+                                    else if (t1.type === "register" && t2.type === "regaddress")
+                                        opCode = opcodes.ADD_REG_REGADDRESS;
+                                    else if (t1.type === "register" && t2.type === "address")
+                                        opCode = opcodes.ADD_REG_ADDRESS;
+                                    else if (t1.type === "register" && t2.type === "number")
+                                        opCode = opcodes.ADD_REG_NUMBER;
+                                    else
+                                        throw "ADD does not support this operands";
+    
+                                    code.push(opCode, t1.value, t2.value);
+                                    break;
+                                case 'SUB':
+                                    t1 = getValue(match[op1_group]);
+                                    t2 = getValue(match[op2_group]);
+    
+                                    if (t1.type === "register" && t2.type === "register")
+                                        opCode = opcodes.SUB_REG_REG;
+                                    else if (t1.type === "register" && t2.type === "regaddress")
+                                        opCode = opcodes.SUB_REG_REGADDRESS;
+                                    else if (t1.type === "register" && t2.type === "address")
+                                        opCode = opcodes.SUB_REG_ADDRESS;
+                                    else if (t1.type === "register" && t2.type === "number")
+                                        opCode = opcodes.SUB_REG_NUMBER;
+                                    else
+                                        throw "SUB does not support this operands";
+    
+                                    code.push(opCode, t1.value, t2.value);
+                                    break;
+                                case 'INC':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                    if (t1.type === "register")
+                                        opCode = opcodes.INC_REG;
+                                    else
+                                        throw "INC does not support this operand";
+    
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'DEC':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                    if (t1.type === "register")
+                                        opCode = opcodes.DEC_REG;
+                                    else
+                                        throw "DEC does not support this operand";
+    
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'CMP':
+                                    t1 = getValue(match[op1_group]);
+                                    t2 = getValue(match[op2_group]);
+    
+                                    if (t1.type === "register" && t2.type === "register")
+                                        opCode = opcodes.CMP_REG_REG;
+                                    else if (t1.type === "register" && t2.type === "regaddress")
+                                        opCode = opcodes.CMP_REG_REGADDRESS;
+                                    else if (t1.type === "register" && t2.type === "address")
+                                        opCode = opcodes.CMP_REG_ADDRESS;
+                                    else if (t1.type === "register" && t2.type === "number")
+                                        opCode = opcodes.CMP_REG_NUMBER;
+                                    else
+                                        throw "CMP does not support this operands";
+    
+                                    code.push(opCode, t1.value, t2.value);
+                                    break;
+                                case 'LOOP':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "Loop supports only one argument";
         
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'JL':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
+                                    if (t1.type === "number")
+                                        opCode = opcodes.LOOP;
+                                    else
+                                        throw "Loop does not support this operands";
         
-                                if (t1.type === "number")
-                                    opCode = opcodes.JL_ADDRESS;
-                                else
-                                    throw "JL does not support this operands";
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'JCXZ':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+
+                                    if (t1.type === "number")
+                                        opCode = opcodes.JCXZ_ADDRESS;
+                                    else
+                                        throw "JCXZ does not support this operands";
+
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'JE':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                    if (t1.type === "number")
+                                        opCode = opcodes.JE_ADDRESS;
+                                    else
+                                        throw "JE does not support this operands";
+
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'JNE':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+        
+                                    if (t1.type === "number")
+                                        opCode = opcodes.JNE_ADDRESS;
+                                    else
+                                        throw "JNE does not support this operands";
+
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'JMP':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                    if (t1.type === "register")
+                                        opCode = opcodes.JMP_REGADDRESS;
+                                    else if (t1.type === "number")
+                                        opCode = opcodes.JMP_ADDRESS;
+                                    else
+                                        throw "JMP does not support this operands";
+    
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'JG':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                    if (t1.type === "number")
+                                        opCode = opcodes.JG_ADDRESS;
+                                    else
+                                        throw "JG does not support this operands";
+        
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'JGE':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+        
+                                    if (t1.type === "number")
+                                        opCode = opcodes.JGE_ADDRESS;
+                                    else
+                                        throw "JGE does not support this operands";
             
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'JLE':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'JL':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
             
-                                if (t1.type === "number")
-                                    opCode = opcodes.JLE_ADDRESS;
-                                else
-                                    throw "JLE does not support this operands";
+                                    if (t1.type === "number")
+                                        opCode = opcodes.JL_ADDRESS;
+                                    else
+                                        throw "JL does not support this operands";
                 
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'MUL':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
-
-                                if (t1.type === "register")
-                                    opCode = opcodes.MUL_REG;
-                                else if (t1.type === "regaddress")
-                                    opCode = opcodes.MUL_REGADDRESS;
-                                else if (t1.type === "address")
-                                    opCode = opcodes.MUL_ADDRESS;
-                                else if (t1.type === "number")
-                                    opCode = opcodes.MUL_NUMBER;
-                                else
-                                    throw "MUL does not support this operand";
-
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'DIV':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
-
-                                if (t1.type === "register")
-                                    opCode = opcodes.DIV_REG;
-                                else if (t1.type === "regaddress")
-                                    opCode = opcodes.DIV_REGADDRESS;
-                                else if (t1.type === "address")
-                                    opCode = opcodes.DIV_ADDRESS;
-                                else if (t1.type === "number")
-                                    opCode = opcodes.DIV_NUMBER;
-                                else
-                                    throw "DIV does not support this operand";
-
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'AND':
-                                t1 = getValue(match[op1_group]);
-                                t2 = getValue(match[op2_group]);
-
-                                if (t1.type === "register" && t2.type === "register")
-                                    opCode = opcodes.AND_REG_REG;
-                                else if (t1.type === "register" && t2.type === "regaddress")
-                                    opCode = opcodes.AND_REG_REGADDRESS;
-                                else if (t1.type === "register" && t2.type === "address")
-                                    opCode = opcodes.AND_REG_ADDRESS;
-                                else if (t1.type === "register" && t2.type === "number")
-                                    opCode = opcodes.AND_REG_NUMBER;
-                                else
-                                    throw "AND does not support this operands";
-
-                                code.push(opCode, t1.value, t2.value);
-                                break;
-                            case 'OR':
-                                t1 = getValue(match[op1_group]);
-                                t2 = getValue(match[op2_group]);
-
-                                if (t1.type === "register" && t2.type === "register")
-                                    opCode = opcodes.OR_REG_REG;
-                                else if (t1.type === "register" && t2.type === "regaddress")
-                                    opCode = opcodes.OR_REG_REGADDRESS;
-                                else if (t1.type === "register" && t2.type === "address")
-                                    opCode = opcodes.OR_REG_ADDRESS;
-                                else if (t1.type === "register" && t2.type === "number")
-                                    opCode = opcodes.OR_REG_NUMBER;
-                                else
-                                    throw "OR does not support this operands";
-
-                                code.push(opCode, t1.value, t2.value);
-                                break;
-                            case 'NOT':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
-
-                                if (t1.type === "register")
-                                    opCode = opcodes.NOT_REG;
-                                else
-                                    throw "NOT does not support this operand";
-                                
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'HLT':
-                                if(match[op1_group]) throw "This instruction supports no arguments";
-                                if(match[op2_group]) throw "This instruction supports no arguments";
-                                opCode = opcodes.NONE;
-                                code.push(opCode);
-                                break;
-                            case 'PUSH':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
-
-                                if (t1.type === "register")
-                                    opCode = opcodes.PUSH_REG;
-                                else if (t1.type === "regaddress")
-                                    opCode = opcodes.PUSH_REGADDRESS;
-                                else if (t1.type === "address")
-                                    opCode = opcodes.PUSH_ADDRESS;
-                                else if (t1.type === "number")
-                                    opCode = opcodes.PUSH_NUMBER;
-                                else
-                                    throw "PUSH does not support this operand";
-
-                                code.push(opCode, t1.value);
-                                break;
-                            case 'POP':
-                                t1 = getValue(match[op1_group]);
-                                if(match[op2_group]) throw "This instruction supports only one argument";
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'JLE':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+                
+                                    if (t1.type === "number")
+                                        opCode = opcodes.JLE_ADDRESS;
+                                    else
+                                        throw "JLE does not support this operands";
+                    
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'MUL':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
     
-                                if (t1.type === "register")
-                                    opCode = opcodes.POP_REG;
-                                else
-                                throw "POP does not support this operand";
+                                    if (t1.type === "register")
+                                        opCode = opcodes.MUL_REG;
+                                    else if (t1.type === "regaddress")
+                                        opCode = opcodes.MUL_REGADDRESS;
+                                    else if (t1.type === "address")
+                                        opCode = opcodes.MUL_ADDRESS;
+                                    else if (t1.type === "number")
+                                        opCode = opcodes.MUL_NUMBER;
+                                    else
+                                        throw "MUL does not support this operand";
+    
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'DIV':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                    if (t1.type === "register")
+                                        opCode = opcodes.DIV_REG;
+                                    else if (t1.type === "regaddress")
+                                        opCode = opcodes.DIV_REGADDRESS;
+                                    else if (t1.type === "address")
+                                        opCode = opcodes.DIV_ADDRESS;
+                                    else if (t1.type === "number")
+                                        opCode = opcodes.DIV_NUMBER;
+                                    else
+                                        throw "DIV does not support this operand";
+    
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'SHR':
+                                    t1 = getValue(match[op1_group]);
+                                    t2 = getValue(match[op2_group]);
+        
+                                    if (t1.type === "register" && t2.type === "number")
+                                        opCode = opcodes.SHR_REG_NUMBER;
+                                    else
+                                        throw "SHR does not support this operands";
+        
+                                    code.push(opCode, t1.value, t2.value);
+                                    break;
+                                case 'SHL':
+                                    t1 = getValue(match[op1_group]);
+                                    t2 = getValue(match[op2_group]);
+            
+                                    if (t1.type === "register" && t2.type === "number")
+                                        opCode = opcodes.SHL_REG_NUMBER;
+                                    else
+                                        throw "SHL does not support this operands";
+            
+                                    code.push(opCode, t1.value, t2.value);
+                                    break;
+                                case 'AND':
+                                    t1 = getValue(match[op1_group]);
+                                    t2 = getValue(match[op2_group]);
+    
+                                    if (t1.type === "register" && t2.type === "register")
+                                        opCode = opcodes.AND_REG_REG;
+                                    else if (t1.type === "register" && t2.type === "regaddress")
+                                        opCode = opcodes.AND_REG_REGADDRESS;
+                                    else if (t1.type === "register" && t2.type === "address")
+                                        opCode = opcodes.AND_REG_ADDRESS;
+                                    else if (t1.type === "register" && t2.type === "number")
+                                        opCode = opcodes.AND_REG_NUMBER;
+                                    else
+                                        throw "AND does not support this operands";
+    
+                                    code.push(opCode, t1.value, t2.value);
+                                    break;
+                                case 'OR':
+                                    t1 = getValue(match[op1_group]);
+                                    t2 = getValue(match[op2_group]);
+    
+                                    if (t1.type === "register" && t2.type === "register")
+                                        opCode = opcodes.OR_REG_REG;
+                                    else if (t1.type === "register" && t2.type === "regaddress")
+                                        opCode = opcodes.OR_REG_REGADDRESS;
+                                    else if (t1.type === "register" && t2.type === "address")
+                                        opCode = opcodes.OR_REG_ADDRESS;
+                                    else if (t1.type === "register" && t2.type === "number")
+                                        opCode = opcodes.OR_REG_NUMBER;
+                                    else
+                                        throw "OR does not support this operands";
+    
+                                    code.push(opCode, t1.value, t2.value);
+                                    break;
+                                case 'NOT':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                    if (t1.type === "register")
+                                        opCode = opcodes.NOT_REG;
+                                    else
+                                        throw "NOT does not support this operand";
+                                    
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'HLT':
+                                    if(match[op1_group]) throw "This instruction supports no arguments";
+                                    if(match[op2_group]) throw "This instruction supports no arguments";
+                                    opCode = opcodes.NONE;
+                                    code.push(opCode);
+                                    break;
+                                case 'PUSH':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+    
+                                    if (t1.type === "register")
+                                        opCode = opcodes.PUSH_REG;
+                                    else if (t1.type === "regaddress")
+                                        opCode = opcodes.PUSH_REGADDRESS;
+                                    else if (t1.type === "address")
+                                        opCode = opcodes.PUSH_ADDRESS;
+                                    else if (t1.type === "number")
+                                        opCode = opcodes.PUSH_NUMBER;
+                                    else
+                                        throw "PUSH does not support this operand";
+    
+                                    code.push(opCode, t1.value);
+                                    break;
+                                case 'POP':
+                                    t1 = getValue(match[op1_group]);
+                                    if(match[op2_group]) throw "This instruction supports only one argument";
+        
+                                    if (t1.type === "register")
+                                        opCode = opcodes.POP_REG;
+                                    else
+                                    throw "POP does not support this operand";
+                                    
+                                    code.push(opCode, t1.value);
+                                    break;
                                 
-                                code.push(opCode, t1.value);
-                                break;
-                            
-
-                            default: throw("Invalid instruction " + match[instr_group]);
-
+    
+                                default: throw("Invalid instruction " + match[instr_group]);
+    
+                            }
+    
                         }
-
                     }
-                }
-                // Check for Syntax Error
-                else{
-                    var line = lines[i].trim();
-                    if (line !== "" && line.slice(0, 1) !== ";") {
-                        throw "Syntax error";
+                    // Check for Syntax Error
+                    else{
+                        var line = lines[i].trim();
+                        if (line !== "" && line.slice(0, 1) !== ";") {
+                            throw "Syntax error";
+                        }
                     }
+    
                 }
-
+            }
+            catch(e){
+                throw e;
             }
             // Replace labels
             for(let i=0; i<code.length; i++){

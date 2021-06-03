@@ -5,6 +5,7 @@
         <title>emu8086-emulator</title>
 
         <script src="app\lib\angular.min.js"></script>
+        <script src="app\lib\angular-route.js"></script>
         <script src="app\src\app.js"></script>
         <script src="app\src\controller.js"></script>
         <script src="app\src\memory.js"></script>
@@ -15,110 +16,7 @@
         <link rel="stylesheet" href="assets/css/style.css">
 
     </head>
-    <body ng-controller="controller">
-
-        <div class="header">
-            <h1>Assembly Simulator(x86)</h1>
-            <form role="form" class="buttons">
-                <button type="button" class="btn btn-default" ng-click="assemble()">Assemble</button>
-                <button type="button" class="btn btn-default" ng-click="compute()">Compute</button>
-                <button type="button" class="btn btn-default" ng-click="step()">Step</button>
-                <button type="button" class="btn btn-default" ng-click="reset()">Reset</button>
-                <button type="button" class="btn btn-default" ng-click="run()">RUN</button>
-            </form>
-        </div>
-
-        <div class="container">
-
-            <div class="input">
-                <h2 class="h2_input">Input:</h2>
-                <form role="form">
-                    <textarea id=""
-                            class="code"
-                            rows="10"
-                            tab-support
-                            select-line
-                            ng-model="text">
-                    </textarea>                
-                </form>
-            </div>
-            <div class="col2">
-                <h2>RAM:</h2>
-                <table class="ram">
-                    <tr ng-repeat="cells in rows">
-                        <td ng-repeat="c in cells track by $index">{{c}}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="col3">
-                <h2>Stack:</h2>
-                <table class="ram">
-                    <tr ng-repeat="cells in rows_stack">
-                        <td ng-repeat="d in cells track by $index">{{d}}</td>
-                    </tr>
-                </table>
-                <h2>Register/Flags:</h2>
-                <div class="registers">
-                    <table class="regs">
-                        <thead>
-                            <tr>
-                                <th style="text-align:center">A</th>
-                                <th style="text-align:center">B</th>
-                                <th style="text-align:center">C</th>
-                                <th style="text-align:center">D</th>
-                                <th style="text-align:center">IP</th>
-                                <th style="text-align:center">S</th>
-                                <th style="text-align:center">Z</th>
-                                <th style="text-align:center">C</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="text-align:center;">
-                                <td><div style="margin:auto;">{{cpu.ax}}</div></td>
-                                <td><div style="margin:auto;">{{cpu.bx}}</div></td>
-                                <td><div style="margin:auto;">{{cpu.cx}}</div></td>
-                                <td><div style="margin:auto;">{{cpu.dx}}</div></td>
-                                <td><div style="margin:auto;">{{cpu.ip}}</div></td>
-                                <td><div style="margin:auto;">{{cpu.sign}}</div></td>
-                                <td><div style="margin:auto;">{{cpu.zero}}</div></td>
-                                <td><div style="margin:auto;">{{cpu.carry}}</div></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="regs">
-                        <thead>
-                            <tr>
-                                <th style="text-align:center">Running</th>
-                                <th style="text-align:center">ValidOpCode</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="text-align:center;">
-                                <td><div style="margin:auto;">{{cpu.running}}</div></td>
-                                <td><div style="margin:auto;">{{cpu.valid}}</div></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <h2>Labels:</h2>
-                <div class="labels">
-                    <table class="lbl">
-                        <thead>
-                            <tr>
-                                <th>Label</th>
-                                <th>Address</th>
-                            </tr>     
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="label in labels">
-                                <td>{{label.name}}</td>
-                                <td>{{label.address}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
+    <body style="background-color: rgb(235, 235, 235);">
+        <main ng-view></main>
     </body>
 </html>

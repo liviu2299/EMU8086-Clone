@@ -67,8 +67,20 @@ app.service('opcodes', [function() {
         JG_ADDRESS: 48,
         JGE_ADDRESS: 49,
         JL_ADDRESS: 50,
-        JLE_ADDRESS: 51
-        // ...
+        JLE_ADDRESS: 51,
+
+        LOOP: 52,
+
+        // 
+
+        JCXZ_ADDRESS: 53,
+        JE_ADDRESS: 54,
+        JNE_ADDRESS: 55,
+
+        SHR_REG_NUMBER: 59,
+        SHL_REG_NUMBER: 60
+      
+
     };
     return opcodes;
 }])

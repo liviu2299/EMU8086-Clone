@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="/assets/css/docs.css">
+    <h1><u>Documentation</u></h1>
+</head>
+
+<body>
+    <hr>
+    <div class="registerflags">
+        <div class="registers">
+            <h2><u>Registers</u></h2>
+            <table>
+                <tr>
+                    <td>Name</td>
+                    <td>Information</td>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>General Register</td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>General Register</td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>General Register</td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>General Register</td>
+                </tr>
+                <tr>
+                    <td>IP</td>
+                    <td>Instruction Pointer</td>
+                </tr>
+            </table>
+        </div>
+        <div class="flags">        
+            <h2><u>Flags</u></h2>
+            <table>
+                <tr>
+                    <td>Name</td>
+                    <td>Information</td>
+                </tr>
+                <tr>
+                    <td>Sign</td>
+                    <td>+ False / - True</td>
+                </tr>
+                <tr>
+                    <td>Zero</td>
+                    <td>When ALU result is 0</td>
+                </tr>
+                <tr>
+                    <td>Carry</td>
+                    <td>When ALU result exceeds 8bit limit</td>
+                </tr>
+            </table>
+        </div>      
+        <br>
+    </div>
+    <div class="instruction">
+        <hr>
+        <h2><u>Instructions</u></h2>
+        <h3>MOV - <small>Copy operand2 to operand1.</small> </h3>
+        <ul>
+            <li>MOV reg, memory</li>
+            <li>MOV reg, memory</li>
+            <li>MOV reg, regaddress</li>
+            <li>MOV reg, immediate</li>
+            <li>MOV address, reg</li>
+            <li>MOV address, immediate</li>
+            <li>MOV regaddress, reg</li>
+            <li>MOV regaddress, immediate</li>
+        </ul>
+        <hr>
+        <h3>ADD - <small>Add operands with Carry.</small> </h3>
+        <ul>
+            <li>ADD reg, immediate</li>
+            <li>ADD reg, reg</li>
+            <li>ADD reg, regaddress</li>
+            <li>ADD reg, address</li>
+        </ul>
+        <hr>
+        <h3>SUB - <small>Subtract operand2 from operand1.</small> </h3>
+        <ul>
+            <li>SUB reg, immediate</li>
+            <li>SUB reg, reg</li>
+            <li>SUB reg, regaddress</li>
+            <li>SUB reg, address</li>
+        </ul>
+        <hr>
+        <h3>INC - <small>Increments operand1.</small> </h3>
+        <ul>
+            <li>INC reg</li>
+        </ul>
+        <hr>
+        <h3>DEC - <small>Decrements operand1.</small> </h3>
+        <ul>
+            <li>DEC reg</li>
+        </ul>
+        <hr>
+        <h3>CMP - <small>Compare: operand1 - operand2. Results are stored only in flags. </small> </h3>
+        <ul>
+            <li>CMP reg, immediate</li>
+            <li>CMP reg, reg</li>
+            <li>CMP reg, regaddress</li>
+            <li>CMP reg, address</li>
+        </ul>
+        <hr>
+        <h3>DIV - <small>Unsigned divide: A / operand1. </small> </h3>
+        <ul>
+            <li>DIV reg</li>
+            <li>DIV immediate</li>
+            <li>DIV regaddress</li>
+            <li>DIV address</li>
+        </ul>
+        <hr>
+        <h3>MUL - <small>Unsigned multiply: A * operand1. </small> </h3>
+        <ul>
+            <li>MUL reg</li>
+            <li>MUL immediate</li>
+            <li>MUL regaddress</li>
+            <li>MUL address</li>
+        </ul>
+        <hr>
+        <h3>AND - <small>Logical AND between all bits of two operands.</small> </h3>
+        <ul>
+            <li>AND reg, immediate</li>
+            <li>AND reg, reg</li>
+            <li>AND reg, regaddress</li>
+            <li>AND reg, address</li>
+        </ul>
+        <hr>
+        <h3>OR - <small>Logical OR between all bits of two operands.</small> </h3>
+        <ul>
+            <li>OR reg, immediate</li>
+            <li>OR reg, reg</li>
+            <li>OR reg, regaddress</li>
+            <li>OR reg, address</li>
+        </ul>
+        <hr>
+        <h3>SHR - <small>Shift operand1 to the right operand2 times.</small> </h3>
+        <ul>
+            <li>SHR reg, immediate</li>
+        </ul>
+        <hr>
+        <h3>SHL - <small>Shift operand1 to the left operand2 times.</small> </h3>
+        <ul>
+            <li>SHL reg, immediate</li>
+        </ul>
+        <hr>
+        <h3>NOT - <small>Invert each bit of the operand.</small> </h3>
+        <ul>
+            <li>NOT reg</li>
+        </ul>
+        <hr>
+        <h3>PUSH - <small>Store 8 bit value in the stack.</small> </h3>
+        <ul>
+            <li>PUSH reg</li>
+            <li>PUSH immediate</li>
+            <li>PUSH regaddress</li>
+            <li>PUSH address</li>
+        </ul>
+        <hr>
+        <h3>POP - <small>Get 8 bit value from the stack.</small> </h3>
+        <ul>
+            <li>POP reg</li>
+        </ul>
+        <hr>
+        <h3>JMP - <small>Unconditional Jump.</small> </h3>
+        <ul>
+            <li>JMP regaddress</li>
+            <li>JMP address</li>
+        </ul>
+        <hr>
+        <h3>JG - <small>Jump if operand1 is greater then operand1. (Sign&Zero)</small> </h3>
+        <ul>
+            <li>JG address</li>
+        </ul>
+        <hr>
+        <h3>JGE - <small>Jump if operand1 is greater or equal with operand1. (Sign)</small> </h3>
+        <ul>
+            <li>JGE address</li>
+        </ul>
+        <hr>
+        <h3>JL - <small>Jump if operand1 is lower then operand1. (Sign&Zero)</small> </h3>
+        <ul>
+            <li>JL address</li>
+        </ul>
+        <hr>
+        <h3>JLE - <small>Jump if operand1 is lower or equal with operand1. (Sign)</small> </h3>
+        <ul>
+            <li>JLE address</li>
+        </ul>
+        <hr>
+        <h3>JCXZ - <small>Jump if C = 0.</small> </h3>
+        <ul>
+            <li>JCXZ address</li>
+        </ul>
+        <hr>
+        <h3>JE - <small>Jump if operand1 is equal to operand1.</small> </h3>
+        <ul>
+            <li>JE address</li>
+        </ul>
+        <hr>
+        <h3>JNE - <small>Jump if operand1 is not equal to operand1.</small> </h3>
+        <ul>
+            <li>JNE address</li>
+        </ul>
+        <hr>
+        <h3>HLT - <small>Halt the System.</small> </h3>
+        <ul>
+            <li>no operands</li>
+        </ul>
+        <hr>
+        <h3>LOOP - <small>Decrease C, jump to label if C != zero.</small> </h3>
+        <ul>
+            <li>LOOP address</li>
+        </ul>
+        <hr>
+    </div>
+</body>
+</html>

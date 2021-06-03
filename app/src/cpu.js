@@ -19,11 +19,13 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
         t1: 0,
         t2: 0,
 
-        // ON/OFF
+        // Variables
         running: true,
         valid: true,
+        loop_protection: 0,
 
         codes: opcodes,
+
 
         on: function(){
 
@@ -36,7 +38,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
              */
             let checkReg = function(reg){
                 if(self.regid.includes(reg)) return reg;
-                else throw "Invalid Register";
+                else throw "Invalid Register" + reg;
             };
 
             /**
@@ -59,7 +61,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                                     break;
                     }
                 }
-                else throw "Invalid Register";
+                else throw "Invalid Register" + reg;
             };
 
             /**
@@ -77,7 +79,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         case(4):    return self.ip;
                     }
                 }
-                else throw "Invalid Register";
+                else throw "Invalid Register" + reg;
             };
 
             /**
@@ -111,7 +113,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                 if(addr > 0 && addr < memory.data.length){
                     self.ip = addr;
                 }
-                else throw "Address out of memory";
+                else throw "Address out of memory" + addr;
             };
 
             // Arithmetic Logic Unit (ALU)
@@ -266,6 +268,25 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
 
                     ///////////////////////////////////////
 
+                    case opcodes.LOOP:
+                        if(self.cx > 1){
+                            t2 = memory.read(++self.ip);
+                            jump(t2);
+                            self.cx--;
+                            self.loop_protection++;
+                            if(self.loop_protection > 500){
+                                throw "Too many iteration in the loop (more than 500)"
+                                break;
+                            }
+                        }
+                        else {
+                            self.ip += 2;
+                            self.cx--;
+                        }
+                        break;
+
+                    ///////////////////////////////////////
+
                     case opcodes.JMP_REGADDRESS:
                         t2 = memory.read(++self.ip);
                         jump(getReg(t2));
@@ -305,7 +326,28 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                             jump(t2);
                         }
                         else self.ip += 2;
-                        break;      
+                        break;  
+                    case opcodes.JCXZ_ADDRESS:  
+                        if(self.cx === 0){
+                            t2 = memory.read(++self.ip);
+                            jump(t2);
+                        }
+                        else self.ip += 2;
+                        break;
+                    case opcodes.JE_ADDRESS:  
+                        if(self.zero){
+                            t2 = memory.read(++self.ip);
+                            jump(t2);
+                        }
+                        else self.ip += 2;
+                        break;
+                    case opcodes.JNE_ADDRESS:  
+                        if(!self.zero){
+                            t2 = memory.read(++self.ip);
+                            jump(t2);
+                        }
+                        else self.ip += 2;
+                        break;
 
                     ///////////////////////////////////////
 
@@ -409,12 +451,27 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
 
                     //////////////////////////////////////
 
-                    // ??????
                     case opcodes.NOT_REG:
                         t1 = checkReg(memory.read(++self.ip));
                         setReg(t1, ~getReg(t1));
+                        self.ip++;
                         break;
 
+                    //////////////////////////////////////
+                    
+                    case opcodes.SHR_REG_NUMBER:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1) >>> t2));
+                        self.ip++;
+                        break;
+                    case opcodes.SHL_REG_NUMBER:
+                        t1 = checkReg(memory.read(++self.ip));
+                        t2 = memory.read(++self.ip);
+                        setReg(t1,check(getReg(t1) << t2));
+                        self.ip++;
+                        break;
+                    
                     //////////////////////////////////////
 
                     case opcodes.PUSH_REG:
@@ -457,19 +514,26 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
 
             // Main
 
-            let instr = memory.read(self.ip);
+            try{
+                let instr = memory.read(self.ip);
 
-            if(instr != 0){
-                alu(instr);
-                self.running = true;
+                if(instr != 0){
+                    alu(instr);
+                    self.running = true;
+                }
+                else self.running = false;
             }
-            else self.running = false;
+            catch(e){
+                throw e;
+            }
+
             
 
         },
 
         reset: function(){ 
             let self = this;
+            self.loop_protection = 0;
             self.ax = 0;
             self.bx = 0;
             self.cx = 0;
