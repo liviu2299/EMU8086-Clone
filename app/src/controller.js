@@ -1,6 +1,6 @@
 app.controller('controller', ['$scope', 'memory', 'opcodes', 'cpu', 'parser', function($scope, memory, opcodes, cpu, parser){
 
-    $scope.text = "MOV A, B";
+    $scope.text = "Write here.";
 
     $scope.cpu = cpu;
     $scope.memory = memory;
@@ -8,6 +8,54 @@ app.controller('controller', ['$scope', 'memory', 'opcodes', 'cpu', 'parser', fu
 
     $scope.rows = [];
     $scope.rows_stack = [];
+
+    $scope.preset1 = function(){
+        $scope.text = `;Loop Support
+MOV C, 10
+MOV B, 1
+        
+bucla: 
+INC B
+loop bucla`;
+    };
+    $scope.preset2 = function(){
+        $scope.text = `;Error Support
+MOV C, 3
+
+bucla:
+INC C
+loop bucla`;
+    };
+    $scope.preset3 = function(){
+        $scope.text = `;Carry
+MOV A, 1
+ADD A, 300
+        
+;Sign Carry
+MOV B, 15
+CMP B, A
+        
+;Zero Flag
+MOV A, 15
+CMP B, A`;
+    };
+    $scope.preset4 = function(){
+        $scope.text = `;Jumps
+MOV A, 10
+MOV B, 1
+        
+start:
+CMP A, B
+JLE gata
+        
+bucla:
+INC B
+JMP start
+        
+gata:
+MOV D, 1
+HLT`;
+    };
 
     // Memory initialization
     let cells = [];

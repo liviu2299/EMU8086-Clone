@@ -304,7 +304,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         else self.ip += 2;
                         break;
                     case opcodes.JGE_ADDRESS:
-                        if(!self.sign)
+                        if(!self.sign || self.zero)
                         {
                             t2 = memory.read(++self.ip);
                             jump(t2);
@@ -320,7 +320,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         else self.ip += 2;
                         break;
                     case opcodes.JLE_ADDRESS:
-                        if(self.sign)
+                        if(self.sign || self.zero)
                         {
                             t2 = memory.read(++self.ip);
                             jump(t2);

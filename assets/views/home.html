@@ -27,7 +27,13 @@
                         tab-support
                         select-line
                         ng-model="text">
-                </textarea>                
+                </textarea>  
+                <div class="presets">
+                    <button type="button" class="buttonpreset" ng-click="preset1()">Loop</button>
+                    <button type="button" class="buttonpreset" ng-click="preset2()">Error</button>
+                    <button type="button" class="buttonpreset" ng-click="preset3()">Flags</button>
+                    <button type="button" class="buttonpreset" ng-click="preset4()">Jumps</button>
+                </div>
             </form>
         </div>
         <div class="col2">
