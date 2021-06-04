@@ -1,29 +1,34 @@
-# Clona **EMU8086**
+# <u>Clona **EMU8086**</u>
 
 
-## **Descriere**
+## **<u>Descriere</u>**
 
-Program ce isi propune simularea arhitecturii x86 printr-un assembler care implementeaza un set de instructiuni de baza al acesteia.
+Acest program isi propune simularea arhitecturii x86 printr-un assembler pe 8 bits care implementeaza un set de instructiuni de baza al acesteia.
 
 <br>
 
-## **Componente**
+## **<u>Componente</u>**
 
 ### Simulator CPU
-- Instructiuni de baza
-- Registrii
-- Stiva
-- Flags
+- Registrii Generali (A, B, C, D)
+- Registrul IP
+- Flags (Sign, Zero, Carry)
+---
+### Memorie
+- Simulare RAM (256 bits)
+- Simulare Stiva (32 bits)
 ---
 ### Assembler
-- Parser
-- Labels *?*
-- Procedures *?*
+- Interpretor instructiuni
 ---
 ### UI (Web App)
-- Editor Assembly (Input)
-- Vizualizare Registrii/Memorie
-- Output secvential *?*
+- Editor cod (Input)
+- Vizualizare Registrii
+- Vizualizare RAM
+- Vizualizare Stiva
+- Executie secventiala
+
+<br>
 
 <br>
 
