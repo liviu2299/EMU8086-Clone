@@ -17,6 +17,121 @@
 
     </head>
     <body style="background-color: rgb(235, 235, 235);">
-        <main ng-view></main>
+        <div class="content" ng-controller="controller">
+
+            <div class="header">
+                <h1><u>Assembly Simulator(x86)</u></h1>
+                <ul class="list">
+                    <li><a href='/assets/views/doc.html'>DOCS</a></li>
+                </ul>
+                <form role="form" class="buttons">
+                    <button type="button" class="buttonregular" style="margin-left:20px;" ng-click="assemble()">Assemble</button>
+                    <button type="button" class="buttonregular" ng-click="compute()">Compute</button>
+                    <button type="button" class="buttonregular" ng-click="step()">Step</button>
+                    <button type="button" class="buttonreset" ng-click="reset()">Reset</button>
+                    <button type="button" class="button" ng-click="run()">RUN</button>
+                </form>
+            </div>
+        
+            <div class="container">
+                <div class="error" ng-hide="error === ''">
+                    Error: {{error}}
+                </div>
+                <div class="input">
+                    <h2 class="h2_input">Input:</h2>
+                    <form role="form">
+                        <textarea id=""
+                                class="code"
+                                rows="10"
+                                tab-support
+                                select-line
+                                ng-model="text">
+                        </textarea>  
+                        <div class="presets">
+                            <button type="button" class="buttonpreset" ng-click="preset1()">Loop</button>
+                            <button type="button" class="buttonpreset" ng-click="preset2()">Error</button>
+                            <button type="button" class="buttonpreset" ng-click="preset3()">Flags</button>
+                            <button type="button" class="buttonpreset" ng-click="preset4()">Jumps</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col2">
+                    <h2>RAM:</h2>
+                    <table class="ram">
+                        <tr ng-repeat="cells in rows">
+                            <td ng-repeat="c in cells track by $index">{{c}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col3">
+                    <h2>Stack:</h2>
+                    <table class="ram">
+                        <tr ng-repeat="cells in rows_stack">
+                            <td ng-repeat="d in cells track by $index">{{d}}</td>
+                        </tr>
+                    </table>
+                    <h2>Register/Flags:</h2>
+                    <div class="registers">
+                        <table class="regs">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center">A</th>
+                                    <th style="text-align:center">B</th>
+                                    <th style="text-align:center">C</th>
+                                    <th style="text-align:center">D</th>
+                                    <th style="text-align:center">IP</th>
+                                    <th style="text-align:center">S</th>
+                                    <th style="text-align:center">Z</th>
+                                    <th style="text-align:center">C</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="text-align:center;">
+                                    <td><div style="margin:auto;">{{cpu.ax}}</div></td>
+                                    <td><div style="margin:auto;">{{cpu.bx}}</div></td>
+                                    <td><div style="margin:auto;">{{cpu.cx}}</div></td>
+                                    <td><div style="margin:auto;">{{cpu.dx}}</div></td>
+                                    <td><div style="margin:auto;">{{cpu.ip}}</div></td>
+                                    <td><div style="margin:auto;">{{cpu.sign}}</div></td>
+                                    <td><div style="margin:auto;">{{cpu.zero}}</div></td>
+                                    <td><div style="margin:auto;">{{cpu.carry}}</div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="regs">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center">Running</th>
+                                    <th style="text-align:center">ValidOpCode</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="text-align:center;">
+                                    <td><div ng-class="{on: cpu.running == true, off: cpu.running == false}">{{cpu.running}}</div></td>
+                                    <td><div>{{cpu.valid}}</div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h2>Labels:</h2>
+                    <div class="labels">
+                        <table class="lbl">
+                            <thead>
+                                <tr>
+                                    <th>Label</th>
+                                    <th>Address</th>
+                                </tr>     
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="label in labels">
+                                    <td>{{label.name}}</td>
+                                    <td>{{label.address}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

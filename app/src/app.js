@@ -1,5 +1,6 @@
 let app = angular.module('emu8086js', ['ngRoute']);
 
+/*
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
         .when('/home', {
@@ -12,3 +13,4 @@ app.config(['$routeProvider', function($routeProvider){
             redirectTo: '/home'
         });
 }]);
+*/
