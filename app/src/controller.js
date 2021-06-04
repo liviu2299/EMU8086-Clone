@@ -76,6 +76,7 @@ HLT`;
         memory.reset();
         cpu.reset();
         $scope.error = "";
+        $scope.labels = [];
         
         let cells = [];
         $scope.rows = [];

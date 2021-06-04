@@ -110,10 +110,10 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
              * @param {number} addr 
              */
             let jump = function(addr){ 
-                if(addr > 0 && addr < memory.data.length){
+                if(addr >= 0 && addr < memory.data.length){
                     self.ip = addr;
                 }
-                else throw "Address out of memory" + addr;
+                else throw "Address out of memory " + addr;
             };
 
             // Arithmetic Logic Unit (ALU)
@@ -290,16 +290,31 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                     case opcodes.JMP_REGADDRESS:
                         t2 = memory.read(++self.ip);
                         jump(getReg(t2));
+                        self.loop_protection++;
+                        if(self.loop_protection > 500){
+                            throw "Too many iteration in the loop (more than 500)"
+                            break;
+                        }
                         break;
                     case opcodes.JMP_ADDRESS:
                         t2 = memory.read(++self.ip);
                         jump(t2);
+                        self.loop_protection++;
+                        if(self.loop_protection > 500){
+                            throw "Too many iteration in the loop (more than 500)"
+                            break;
+                        }
                         break;
                     case opcodes.JG_ADDRESS:
                         if(!self.sign && !self.zero)
                         {
                             t2 = memory.read(++self.ip);
                             jump(t2);
+                            self.loop_protection++;
+                            if(self.loop_protection > 500){
+                                throw "Too many iteration in the loop (more than 500)"
+                                break;
+                            }
                         }
                         else self.ip += 2;
                         break;
@@ -308,6 +323,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         {
                             t2 = memory.read(++self.ip);
                             jump(t2);
+                            self.loop_protection++;
+                            if(self.loop_protection > 500){
+                                throw "Too many iteration in the loop (more than 500)"
+                                break;
+                            }
                         }
                         else self.ip += 2;
                         break;
@@ -316,6 +336,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         {
                             t2 = memory.read(++self.ip);
                             jump(t2);
+                            self.loop_protection++;
+                            if(self.loop_protection > 500){
+                                throw "Too many iteration in the loop (more than 500)"
+                                break;
+                            }
                         }
                         else self.ip += 2;
                         break;
@@ -324,6 +349,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         {
                             t2 = memory.read(++self.ip);
                             jump(t2);
+                            self.loop_protection++;
+                            if(self.loop_protection > 500){
+                                throw "Too many iteration in the loop (more than 500)"
+                                break;
+                            }
                         }
                         else self.ip += 2;
                         break;  
@@ -331,6 +361,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         if(self.cx === 0){
                             t2 = memory.read(++self.ip);
                             jump(t2);
+                            self.loop_protection++;
+                            if(self.loop_protection > 500){
+                                throw "Too many iteration in the loop (more than 500)"
+                                break;
+                            }
                         }
                         else self.ip += 2;
                         break;
@@ -338,6 +373,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         if(self.zero){
                             t2 = memory.read(++self.ip);
                             jump(t2);
+                            self.loop_protection++;
+                            if(self.loop_protection > 500){
+                                throw "Too many iteration in the loop (more than 500)"
+                                break;
+                            }
                         }
                         else self.ip += 2;
                         break;
@@ -345,6 +385,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes,memory) {
                         if(!self.zero){
                             t2 = memory.read(++self.ip);
                             jump(t2);
+                            self.loop_protection++;
+                            if(self.loop_protection > 500){
+                                throw "Too many iteration in the loop (more than 500)"
+                                break;
+                            }
                         }
                         else self.ip += 2;
                         break;
