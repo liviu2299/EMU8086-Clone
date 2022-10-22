@@ -40,9 +40,6 @@ The purpose of this project is to create a handmade 8-bit emulator of a limited 
 
 <br>
 
-![sample1](assets/images/assembler_diagrama.png)
-<br>
-
 ## **<u>Instructions</u>**
 
 |Math|Memory|Logic|Test|Jumps|System|
