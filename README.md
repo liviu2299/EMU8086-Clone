@@ -27,8 +27,6 @@ The purpose of this project is to create a handmade 8-bit emulator of a limited 
 <br>
 <!-- <img src="/assets/images/sample.png" alt="sample"> -->
 
-![sample1](assets/images/sample.png)
-<br>
 
 ## **<u>How it works</u>**
 
