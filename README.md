@@ -53,6 +53,3 @@ The purpose of this project is to create a handmade 8-bit emulator of a limited 
 |    |      |     |    |LOOP |      |
 
 
-## **<u>Demo</u>**
-https://liviu2299.github.io/EMU8086-Clone/
-
